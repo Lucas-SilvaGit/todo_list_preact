@@ -39,8 +39,10 @@ const Store = () => {
     <div>
       <h1>Todo List</h1>
       <div>
-        <input type="text" value={newTask} onChange={handleInputChange} />
-        <button onClick={handleAddTask}>Add Task</button>
+        <form onSubmit={handleAddTask}>
+          <input type="text" value={newTask} onChange={handleInputChange} />
+          <button onClick={handleAddTask}>Add Task</button>
+        </form>
       </div>
       <ul>
         {tasks.map((task, index) => (
