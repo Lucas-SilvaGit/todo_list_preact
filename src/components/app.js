@@ -1,11 +1,22 @@
 import { h } from 'preact';
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 
 import Header from './header';
 
 const Store = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
+
+  useEffect(() => {
+    const storedTasks = localStorage.getItem('tasks');
+    if (storedTasks) {
+      setTasks(JSON.parse(storedTasks));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
   const handleInputChange = (e) => {
     setNewTask(e.target.value);
@@ -24,16 +35,14 @@ const Store = () => {
     setTasks(updatedTasks);
   };
 
-  const handleSaveTask = (index) => {
-    
-  }
-
   return (
     <div>
       <h1>Todo List</h1>
       <div>
-        <input type="text" value={newTask} onChange={handleInputChange} />
-        <button onClick={handleAddTask}>Add Task</button>
+        <form onSubmit={handleAddTask}>
+          <input type="text" value={newTask} onChange={handleInputChange} />
+          <button onClick={handleAddTask}>Add Task</button>
+        </form>
       </div>
       <ul>
         {tasks.map((task, index) => (
