@@ -1,15 +1,15 @@
 import { h } from 'preact';
 import style from './style.css';
 
-function Home({ todos, addTodo, removeTodo }) {
-  function handleAddTodo(event) {
+const Home = ({ todos, addTodo, removeTodo }) => {
+  const handleAddTodo = (event) => {
     event.preventDefault();
     const text = event.target.elements.todoText.value.trim();
     if (text !== '') {
       addTodo(text);
       event.target.elements.todoText.value = '';
     }
-  }
+  };
 
   const handleRemoveTodo = (index) => {
     removeTodo(index);
@@ -31,6 +31,6 @@ function Home({ todos, addTodo, removeTodo }) {
       </ul>
     </div>
   );
-}
+};
 
 export default Home;
