@@ -7,6 +7,9 @@ const Store = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
 
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingText, setEditingText] = useState('');
+
   useEffect(() => {
     const storedTasks = localStorage.getItem('tasks');
     if (storedTasks) {
@@ -18,8 +21,8 @@ const Store = () => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
 
-  const handleInputChange = (e) => {
-    setNewTask(e.target.value);
+  const handleInputChange = (event) => {
+    setNewTask(event.target.value);
   };
 
   const handleAddTask = () => {
@@ -33,7 +36,29 @@ const Store = () => {
   const handleDeleteTask = (index) => {
     const updatedTasks = tasks.filter((_, i) => i !== index);
     setTasks(updatedTasks);
+    if (editingIndex === index) {
+      setEditingIndex(null);
+      setEditingText('');
+    }
   };
+
+  const handleEditTask = (index) => {
+    const taskToEdit = tasks[index];
+    setEditingIndex(index);
+    setEditingText(taskToEdit);
+  }
+
+  const handleEditingChange = (event) => {
+    setEditingText(event.target.value);
+  };
+
+  const handleSaveTask = (index) => {
+    const updatedTasks = [...tasks];
+    updatedTasks[index] = editingText;
+    setTasks(updatedTasks);
+    setEditingIndex(null);
+    setEditingText('');
+  }
 
   return (
     <div>
@@ -47,7 +72,21 @@ const Store = () => {
       <ul>
         {tasks.map((task, index) => (
           <li key={index}>
-            {task}
+            {editingIndex === index ? (
+              <input 
+                type="text" 
+                value={editingText} 
+                onChange={handleEditingChange}
+              />
+            ) : (
+              <>
+                {task}
+                <button onClick={() => handleEditTask(index)}>Edit</button>
+              </>
+            )}
+            {editingIndex === index && (
+              <button onClick={() => handleSaveTask(index)}>Save</button>
+            )}
             <button onClick={() => handleDeleteTask(index)}>Delete</button>
           </li>
         ))}
